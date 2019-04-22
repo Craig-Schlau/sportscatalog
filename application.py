@@ -15,8 +15,9 @@ import requests
 
 app = Flask(__name__)
 
+APP_PATH = '/var/www/sportscatalog'
 CLIENT_ID = json.loads(
-    open('client_secrets.json', 'r').read())['web']['client_id']
+    open(APP_PATH + 'client_secrets.json', 'r').read())['web']['client_id']
 APPLICATION_NAME = "Sports Catalog App"
 
 """Connect to Database and create database session"""
@@ -51,7 +52,8 @@ def gconnect():
 
     try:
         """Upgrade the authorization code into a credentials object"""
-        oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
+        oauth_flow = flow_from_clientsecrets(APP_PATH + 'client_secrets.json',
+                                             scope='')
         oauth_flow.redirect_uri = 'postmessage'
         credentials = oauth_flow.step2_exchange(code)
     except FlowExchangeError:
@@ -478,4 +480,4 @@ def disconnect():
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
     app.debug = True
-app.run(host='0.0.0.0', port=8000)
+app.run(host='18.218.24.9', port=80)
