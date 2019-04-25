@@ -1,0 +1,75 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "header.html" %}
+	<div class="row divider green">
+		<div class="col-md-12"></div>
+	</div>
+	<div class="row banner menu">
+		<div class="col-md-11 col-md-offset-1 padding-none">
+			<h1>{{ sports.name }}
+			<figure class="creator">
+				<img src="{{ creator.picture }}" alt="Smiley face" height="102" width="102">
+				<figcaption>Created By {{ creator.name }}</figcaption>
+			</figure>
+			</h1>
+
+		</div>
+	</div>
+
+	<div class = 'flash'>
+		{% with messages = get_flashed_messages() %}
+			{% if messages %}
+				<ul>
+					{% for message in messages %}
+						<li> <strong> {{ message }} </strong> </li>
+					{% endfor %}
+				</ul>
+			{% endif %}
+		{% endwith %}
+	</div>
+	{% if loggedin == "yes" %}
+		<div class="row padding-top padding-bottom">
+			<div class="col-md-1"></div>
+			<div class="col-md-11 padding-none">
+				<a href="{{url_for('newSportsItem', sports_id = sports.id )}}">
+					<button class="btn btn-default" id="new-sports-item">
+						<span class="glyphicon glyphicon-upload" aria-hidden="true"></span>Add New Sports Item
+					</button>
+				</a>
+				<a href="{{url_for('editSports', sports_id = sports.id )}}">
+					<button class="btn btn-default" id="new-sports-item">
+						<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>Edit {{ sports.name }} Sport Name
+					</button>
+				</a>
+
+				<a href="{{url_for('deleteSports', sports_id = sports.id )}}">
+					<button class="btn btn-default delete" id="delete-sports">
+						<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>Delete {{ sports.name }} Sport
+					</button>
+				</a>
+			</div>
+			<div class="col-md-7"></div>
+		</div>
+	 {% endif %}
+
+	{% if items !=[] %}
+		<div class="row">
+			<div class="col-md-1"></div>
+			<div class="col-md-3">
+				<h2>Sports Items</h2>
+					{% for i in items %}
+
+						<div class="sports-item">
+							<h3>Name: {{i.SportsItem.name}}</h3>
+							<p>Description: {{i.SportsItem.description}}</p>
+							{% if loggedin == "yes" %}
+								<a href="{{url_for('editSportsItem', sports_id = i.SportsItem.sports_id, items_id=i.SportsItem.id )}}">Edit</a> |
+								<a href="{{url_for('deleteSportsItem', sports_id = i.SportsItem.sports_id, items_id=i.SportsItem.id )}}">Delete</a>
+								| Owner {{i.User.name}}
+
+							{% endif %}
+						</div>
+					{% endfor %}
+			</div>
+	{% endif %}
+{% endblock %}
