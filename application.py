@@ -16,12 +16,14 @@ import requests
 app = Flask(__name__)
 
 APP_PATH = '/var/www/sportscatalog'
+TEMPLATE_PATH = 'var/www/sportscatalog/templates'
+
 CLIENT_ID = json.loads(
     open(APP_PATH + 'client_secrets.json', 'r').read())['web']['client_id']
 APPLICATION_NAME = "Sports Catalog App"
 
 """Connect to Database and create database session"""
-engine = create_engine('sqlite:///sportscatalog.db?check_same_thread=False')
+engine = create_engine('postgresql:///sportscatalog.db?check_same_thread=False')
 Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)
@@ -36,7 +38,7 @@ def showLogin():
                     for x in xrange(32))
     login_session['state'] = state
     """return "The current session state is %s" % login_session['state']"""
-    return render_template('login.html', STATE=state)
+    return render_template(TEMPLATE_PATH + 'login.html', STATE=state)
 
 
 # Connect to the Google Sign-in oAuth method.
@@ -264,7 +266,7 @@ def showSports():
     """This query will show all sports in asc order"""
     sports = session.query(Sports).order_by(asc(collate(Sports.name,
                                                         'NOCASE')))
-    return render_template('sports.html', sports=sports)
+    return render_template(TEMPLATE_PATH + 'sports.html', sports=sports)
 
 
 # Create a new sport
@@ -282,7 +284,7 @@ def newSports():
         session.commit()
         return redirect(url_for('showSports'))
     else:
-        return render_template('newSports.html')
+        return render_template(TEMPLATE_PATH + 'newSports.html')
 
 
 # Edit a sport
@@ -303,7 +305,8 @@ def editSports(sports_id):
             editedSports.name = request.form['name']
             return redirect(url_for('showSports'))
     else:
-        return render_template('editSports.html', sports=editedSports)
+        return render_template(TEMPLATE_PATH + 'editSports.html',
+                               sports=editedSports)
 
 
 # Delete a sport
@@ -324,7 +327,8 @@ def deleteSports(sports_id):
         session.commit()
         return redirect(url_for('showSports', sports_id=sports_id))
     else:
-        return render_template('deleteSports.html', sports=sportsToDelete)
+        return render_template(TEMPLATE_PATH + 'deleteSports.html',
+                               sports=sportsToDelete)
 
 
 # Show a sports item
@@ -387,7 +391,7 @@ def newSportsItem(sports_id):
         flash('New Sports Item %s Successfully Created' % newSportsItem.name)
         return redirect(url_for('showSportsItem', sports_id=sports_id))
     else:
-        return render_template(
+        return render_template(TEMPLATE_PATH +
             'newsportsitems.html',
             sports_id=sports_id,
             sports=sports)
@@ -421,7 +425,7 @@ def editSportsItem(sports_id, items_id):
         session.commit()
         return redirect(url_for('showSportsItem', sports_id=sports_id))
     else:
-        return render_template(
+        return render_template(TEMPLATE_PATH +
             'editsportsitems.html',
             sports_id=sports_id,
             items_id=items_id,
@@ -454,7 +458,8 @@ def deleteSportsItem(sports_id, items_id):
         session.commit()
         return redirect(url_for('showSportsItem', sports_id=sports_id))
     else:
-        return render_template('deleteSportsItems.html', item=deleteItem)
+        return render_template(TEMPLATE_PATH + 'deleteSportsItems.html',
+                               item=deleteItem)
 
 
 # Disconnect based on provider
