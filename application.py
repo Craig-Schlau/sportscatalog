@@ -15,15 +15,15 @@ import requests
 
 app = Flask(__name__)
 
-APP_PATH = '/var/www/sportscatalog'
-TEMPLATE_PATH = 'var/www/sportscatalog/templates'
+APP_PATH = '/var/www/sportscatalog/'
+TEMPLATE_PATH = 'var/www/sportscatalog/templates/'
 
 CLIENT_ID = json.loads(
     open(APP_PATH + 'client_secrets.json', 'r').read())['web']['client_id']
 APPLICATION_NAME = "Sports Catalog App"
 
 """Connect to Database and create database session"""
-engine = create_engine('postgresql:///sportscatalog.db?check_same_thread=False')
+engine = create_engine('postgresql:///sportscatalog?check_same_thread=False')
 Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)
